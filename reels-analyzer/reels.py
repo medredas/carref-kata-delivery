@@ -136,6 +136,7 @@ def download_urls(urls: list[str], workdir: Path, cookies_from_browser: str | No
         "merge_output_format": "mp4",
         "writeinfojson": False,
         "quiet": True,
+        "noprogress": True,
         "no_warnings": True,
         "ignoreerrors": True,
     }
@@ -202,6 +203,16 @@ def cmd_download(args) -> list[Path]:
 _MODEL_CACHE: dict = {}
 
 
+def load_audio(video: Path, sr: int = 16000):
+    """Audio mono 16 kHz en float32, décodé par ffmpeg (évite les incompatibilités de PyAV)."""
+    import numpy as np
+    out = subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-i", str(video),
+                          "-vn", "-ac", "1", "-ar", str(sr), "-f", "s16le", "-"], capture_output=True)
+    if out.returncode != 0:
+        sys.exit(f"ffmpeg n'a pas pu lire l'audio de {video} : {out.stderr.decode(errors='ignore')[:300]}")
+    return np.frombuffer(out.stdout, np.int16).astype(np.float32) / 32768.0
+
+
 def transcribe_one(d: Path, model_name: str, language: str | None, force: bool) -> dict:
     out_json = d / "transcript.json"
     if out_json.exists() and not force:
@@ -217,7 +228,7 @@ def transcribe_one(d: Path, model_name: str, language: str | None, force: bool) 
     model = _MODEL_CACHE[model_name]
 
     segments, info = model.transcribe(
-        str(d / "video.mp4"), language=language, word_timestamps=True,
+        load_audio(d / "video.mp4"), language=language, word_timestamps=True,
         vad_filter=True, beam_size=5,
     )
     segs = []
