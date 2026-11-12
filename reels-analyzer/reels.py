@@ -734,7 +734,8 @@ def main(argv=None) -> None:
     def tr_opts(sp):
         sp.add_argument("--model", default="small",
                         help="modèle Whisper : tiny, base, small, medium, large-v3 (défaut : small)")
-        sp.add_argument("--lang", default="fr", help="langue parlée, ou 'auto' (défaut : fr)")
+        sp.add_argument("--lang", default="auto",
+                        help="langue parlée (fr, en, ar…) ou auto = détection automatique (défaut : auto)")
         sp.add_argument("--force", action="store_true", help="refait la transcription")
 
     def cut_opts(sp):

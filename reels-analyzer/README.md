@@ -58,7 +58,7 @@ Pour les statistiques complètes (portée, enregistrements, partages), exportez-
 
 ```bash
 python reels.py download <liens|fichiers|dossiers> [--cookies-from-browser chrome]
-python reels.py transcribe [reel...] [--model small|medium|large-v3] [--lang fr|auto]
+python reels.py transcribe [reel...] [--model small|medium|large-v3] [--lang auto|fr|en|ar]
 python reels.py cut        [reel...] [--mode vente|scenes|phrases|at] [--at 0:03,0:12.5]
 python reels.py analyze    [reel...]
 python reels.py ai         [reel...] [--effort low|medium|high]
