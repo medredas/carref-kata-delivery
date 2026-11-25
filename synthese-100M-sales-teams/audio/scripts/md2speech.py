@@ -67,7 +67,8 @@ def say(t: str) -> str:
     for a, b in ABBR:
         t = re.sub(a, b, t)
     # symbols
-    t = (t.replace("→", ", puis ").replace("≈", "environ ").replace("≥", "au moins ")
+    t = t.replace("→", ", puis ") if t.count("→") > 1 else t.replace("→", ", donc ")
+    t = (t.replace("≈", "environ ").replace("≥", "au moins ")
           .replace("≤", "au plus ").replace("×", " fois ").replace("÷", " divisé par ")
           .replace("§", "section ").replace("—", ", ").replace("–", ", ")
           .replace("…", ".").replace("«", "").replace("»", "").replace("\"", ""))
